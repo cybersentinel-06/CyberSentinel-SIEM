@@ -1,0 +1,32 @@
+<group name="misp_threat_intelligence">
+    <!-- IP Threat Detection -->
+    <rule id="100380" level="12">
+        <if_sid>30120</if_sid>
+        <list field="srcip" lookup="match_key">etc/lists/misp_ip_threats.txt</list>
+        <description>MISP Threat Intelligence: Malicious Source IP Detected</description>
+        <group>misp,threat_intelligence,ip</group>
+    </rule>
+
+    <rule id="100381" level="12">
+        <if_sid>30120</if_sid>
+        <list field="dstip" lookup="match_key">etc/lists/misp_ip_threats.txt</list>
+        <description>MISP Threat Intelligence: Malicious Destination IP Detected</description>
+        <group>misp,threat_intelligence,ip</group>
+    </rule>
+
+    <!-- Domain Threat Detection -->
+    <rule id="100382" level="12">
+        <if_sid>30120</if_sid>
+        <list field="url" lookup="match_key">etc/lists/misp_domain_threats.txt</list>
+        <description>MISP Threat Intelligence: Malicious Domain Detected</description>
+        <group>misp,threat_intelligence,domain</group>
+    </rule>
+
+    <!-- Hash Threat Detection -->
+    <rule id="100383" level="12">
+        <if_sid>30120</if_sid>
+        <list field="md5" lookup="match_key">etc/lists/misp_hash_threats.txt</list>
+        <description>MISP Threat Intelligence: Malicious File Hash Detected</description>
+        <group>misp,threat_intelligence,hash</group>
+    </rule>
+</group>
