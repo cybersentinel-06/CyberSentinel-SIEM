@@ -1,0 +1,59 @@
+<group name="chavecloak,">
+
+<!-- Suspicious file creation -->
+  <rule id="100201" level="12">
+    <if_sid>61613</if_sid>
+    <field name="win.eventdata.image" type="pcre2">msiexec.exe</field>
+    <field name="win.eventdata.targetFilename" type="pcre2">Lightshot.exe</field>
+    <description>$(win.eventdata.image) created the executable $(win.eventdata.targetFilename). Possible CHAVECLOAK malware activity.</description>
+    <mitre>
+      <id>T1204.002</id>
+    </mitre>
+  </rule>
+
+<!-- Lightshot executable loaded -->
+  <rule id="100202" level="12">
+    <if_sid>61609</if_sid>
+    <field name="win.eventdata.image" type="pcre2">Lightshot.exe</field>
+    <field name="win.eventdata.imageLoaded" type="pcre2">Lightshot.exe</field>
+    <description>$(win.eventdata.originalFileName) executable loaded. CHAVECLOAK malware detected.</description>
+    <mitre>
+      <id>T1073</id>
+    </mitre>
+  </rule>
+
+<!-- DLL Sideloading -->
+  <rule id="100203" level="12">
+    <if_sid>61609</if_sid>
+    <field name="win.eventdata.image" type="pcre2">Lightshot.exe</field>
+    <field name="win.eventdata.imageLoaded" type="pcre2">Lightshot.dll</field>
+    <description>$(win.eventdata.imageLoaded) loaded by $(win.eventdata.image). CHAVECLOAK malware detected.</description>
+    <mitre>
+      <id>T1073</id>
+    </mitre>
+  </rule>
+
+<!-- Persistence detection -->
+  <rule id="100204" level="12">
+    <if_sid>92300</if_sid>
+    <field name="win.eventdata.image" type="pcre2">Lightshot.exe</field>
+    <field name="win.eventdata.eventType" type="pcre2">(?i)SetValue</field>
+    <field name="win.eventdata.targetObject" type="pcre2">(?i)\\\\CurrentVersion\\\\Run\\\\Lightshot</field>
+    <description>New run key added to registry by $(win.eventdata.image). CHAVECLOAK malware detected.</description>
+    <mitre>
+      <id>T1547.001</id>
+    </mitre>
+  </rule>
+
+<!-- Outbound network connection -->
+  <rule id="100205" level="12">
+    <if_sid>61605</if_sid>
+    <field name="win.eventdata.image" type="pcre2">Lightshot.exe</field>
+    <field name="win.eventdata.destinationIp" type="pcre2">\d+.\d+.\d+.\d+</field>
+    <description>Possible CHAVECLOAK malware activity: Network connection to $(win.eventdata.destinationIp):$(win.eventdata.destinationPort) detected.</description>
+    <mitre>
+      <id>T1036</id>
+    </mitre>
+  </rule>
+
+</group>
