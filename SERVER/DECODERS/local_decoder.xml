@@ -1,0 +1,136 @@
+<!-- Local Decoders -->
+
+<!-- Modify it at your will. -->
+<!-- Copyright (C) 2015, Wazuh Inc. -->
+
+<!--
+  - Allowed static fields:
+  - location   - where the log came from (only on FTS)
+  - srcuser    - extracts the source username
+  - dstuser    - extracts the destination (target) username
+  - user       - an alias to dstuser (only one of the two can be used)
+  - srcip      - source ip
+  - dstip      - dst ip
+  - srcport    - source port
+  - dstport    - destination port
+  - protocol   - protocol
+  - id         - event id
+  - url        - url of the event
+  - action     - event action (deny, drop, accept, etc)
+  - status     - event status (success, failure, etc)
+  - extra_data - Any extra data
+-->
+<!--
+<decoder name="Sentinel AIdecoder">
+    <prematch>Sentinel_AI:</prematch>
+</decoder>
+
+<decoder name="Sentinel AIdecoder1">
+    <parent>Sentinel AIdecoder</parent>
+    <regex>Sentinel_AI: (\S+) - Scan result: (\S+) (\S+)</regex>
+    <order>log_type, Sentinel AIrule, Sentinel AIscanned_file</order>
+</decoder>
+-->
+<decoder name="Sentinel AI decoder">
+  <prematch>Sentinel AI:</prematch>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">Sentinel_AI: (\S+)</regex>
+  <order>Sentinel_AI.log_type</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">Scan result: (\S+)\s+</regex>
+  <order>Sentinel_AI.rule_name</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">\"([^"]+)",</regex>
+  <order>Sentinel_AI.rule_description</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">author=CyberSentinel</regex>
+  <order>Sentinel_AI.rule_author</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">reference="([^"]+)",</regex>
+  <order>Sentinel_AI.reference</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">date="([^"]+)",</regex>
+  <order>Sentinel_AI.published_date</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">score =(\d+),</regex>
+  <order>Sentinel_AI.threat_score</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">customer="([^"]+)",</regex>
+  <order>Sentinel AI.api_customer</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">hash1="([^"]+)",</regex>
+  <order>Sentinel_AI.file_hash</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">tags="([^"]+)",</regex>
+  <order>Sentinel_AI.tags</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">minimum_Sentinel_AI="([^"]+)"\]</regex>
+  <order>Sentinel_AI.minimum_Sentinel AIversion</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">\] (.*) \|</regex>
+  <order>Sentinel_AI.scanned_file</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">AI_response: (.*)</regex>
+  <order>AI_response</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">Successfully deleted (.*)</regex>
+  <order>Sentinel_AI.file_deleted</order>
+</decoder>
+
+<decoder name="Sentinel AI child">
+  <parent>Sentinel AI decoder</parent>
+  <regex type="pcre2">Unable to delete (.*)</regex>
+  <order>Sentinel_AI.file_not_deleted</order>
+</decoder>
+
+   <!----------------- DLP --------------------->
+
+<decoder name="sensitive-data-pattern">
+  <prematch>\.csv|\.xlsx|\.pdf|\.docx</prematch>
+</decoder>
+
+<decoder name="pii-pattern">
+  <prematch>SSN|credit.card|passport</prematch>
+</decoder>
